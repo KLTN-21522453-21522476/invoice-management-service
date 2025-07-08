@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
+    <Folder Include="Data\Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InvoiceManagementService.Application\InvoiceManagementService.Application.csproj" />
+    <ProjectReference Include="..\InvoiceManagementService.Domain\InvoiceManagementService.Domain.csproj" />
+    <ProjectReference Include="..\InvoiceManagementService.Shared\InvoiceManagementService.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
