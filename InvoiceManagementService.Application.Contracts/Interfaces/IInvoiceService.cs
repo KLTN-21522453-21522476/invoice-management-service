@@ -8,4 +8,7 @@ public interface IInvoiceService
     Task<InvoiceDto> CreateInvoiceAsync(InvoiceDto invoiceDto);
     Task<InvoiceDto?> GetInvoiceByIdAsync(Guid id);
     Task<List<InvoiceDto>> GetInvoicesByGroupAsync(InvoiceGroupQueryParametersDto invoiceGroupQueryParametersDto);
+    Task<InvoiceDto> UpdateInvoiceAsync(InvoiceDto invoiceDto);
+
+    Task<bool> DeleteInvoiceAsync(Guid id);
 }

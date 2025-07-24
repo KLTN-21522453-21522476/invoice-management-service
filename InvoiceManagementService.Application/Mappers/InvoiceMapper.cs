@@ -12,7 +12,7 @@ public class InvoiceMapper
         var now = DateTime.UtcNow;
         return new Invoice
         {
-            Id = Guid.NewGuid(),
+            Id = dto.Id ?? Guid.Empty,
             GroupId = dto.GroupId ?? Guid.Empty,
             ApprovedBy = dto.ApprovedBy ?? Guid.Empty,
             SubmittedBy = dto.SubmittedBy ?? Guid.Empty,
@@ -59,7 +59,8 @@ public class InvoiceMapper
                 Id = x.Id,
                 Item = x.Name,
                 Price = x.Price,
-                Quantity = x.Quantity
+                Quantity = x.Quantity,
+                Invoice = x.InvoiceId,
             }).ToList()
         };
     }
