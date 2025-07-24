@@ -86,4 +86,50 @@ public class InvoiceService : IInvoiceService
             throw;
         }
     }
+
+    public async Task<InvoiceDto> UpdateInvoiceAsync(InvoiceDto invoiceDto)
+    {
+        try
+        {
+            _logger.LogInformation("Updating invoice with Id: {InvoiceId}", invoiceDto.Id);
+            InvoiceMapper mapper = new InvoiceMapper();
+            var invoice = mapper.MapDtoToInvoice(invoiceDto);
+            invoice = await _invoiceRepository.UpdateAsync(invoice);
+            if (invoice == null)
+            {
+                _logger.LogWarning("Invoice with Id: {InvoiceId} not found for update", invoiceDto.Id);
+                return null;
+            }
+            _logger.LogInformation("Invoice {InvoiceId} updated successfully", invoice.Id);
+            return mapper.MapInvoiceToDto(invoice);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating invoice with Id: {InvoiceId}", invoiceDto.Id);
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteInvoiceAsync(Guid id)
+    {
+        try
+        {
+            _logger.LogInformation("Deleting invoice with Id: {InvoiceId}", id);
+            var result = await _invoiceRepository.DeleteAsync(id);
+            if (result)
+            {
+                _logger.LogInformation("Invoice with Id: {InvoiceId} deleted successfully", id);
+            }
+            else
+            {
+                _logger.LogWarning("Failed to delete invoice with Id: {InvoiceId}", id);
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting invoice with Id: {InvoiceId}", id);
+            throw;
+        }
+    }
 }
