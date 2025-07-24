@@ -1,6 +1,6 @@
 ﻿using InvoiceManagementService.Shared.Enums;
 
-namespace InvoiceManagementService.Application.Contracts.DTOs;
+namespace InvoiceManagementService.Application.Contracts.DTO;
 
 public class InvoiceDto
 {
@@ -16,7 +16,7 @@ public class InvoiceDto
     public Guid? ApprovedBy { get; set; }
     public Guid? SubmittedBy { get; set; }
     public DateTime? CreatedDate { get; set; }
-    public DateTime? UpdateAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     public decimal? TotalAmount { get; set; }
     public string? ImageUrl { get; set; }
 }

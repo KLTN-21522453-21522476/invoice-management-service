@@ -20,11 +20,6 @@
     <ProjectReference Include="..\InvoiceManagementService.Application\InvoiceManagementService.Application.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Domain\InvoiceManagementService.Domain.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Infrastructure\InvoiceManagementService.Infrastructure.csproj" />
-    <ProjectReference Include="..\InvoiceService\InvoiceService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
