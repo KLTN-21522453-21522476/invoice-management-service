@@ -7,14 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Data\Repositories\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\InvoiceManagementService.Application\InvoiceManagementService.Application.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Domain\InvoiceManagementService.Domain.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Shared\InvoiceManagementService.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Dtos\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

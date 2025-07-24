@@ -1,4 +1,4 @@
-namespace InvoiceManagementService.Application.Contracts.DTOs
+namespace InvoiceManagementService.Application.Contracts.DTO
 {
     public class ItemDto
     {

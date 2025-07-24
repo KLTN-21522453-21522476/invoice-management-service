@@ -1,16 +1,25 @@
+using InvoiceManagementService.Application.Contracts.Interfaces;
+using InvoiceManagementService.Application.Services;
+using InvoiceManagementService.Domain.Interfaces;
 using InvoiceManagementService.Infrastructure;
+using InvoiceManagementService.Infrastructure.Data.Context;
+using InvoiceManagementService.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
-
-
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

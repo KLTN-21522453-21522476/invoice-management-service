@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\InvoiceManagementService.Shared\InvoiceManagementService.Shared.csproj" />
   </ItemGroup>
 
