@@ -34,6 +34,12 @@ public class Invoice
     [Column("amount")]
     public decimal Amount { get; set; }
 
+    [Column("file_name")]
+    public string FileName { get; set; }
+
+    [Column("file_id")]
+    public string FileId { get; set; }
+
     [Column("image_path")]
     public string ImagePath { get; set; }
 

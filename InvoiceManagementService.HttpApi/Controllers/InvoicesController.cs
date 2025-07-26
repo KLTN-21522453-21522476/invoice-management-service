@@ -20,15 +20,17 @@ public class InvoicesController : ControllerBase
     [ProducesResponseType(typeof(InvoiceDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<IActionResult> CreateInvoice([FromBody] InvoiceDto dto)
+    public async Task<IActionResult> CreateInvoice(
+        [FromForm] CreateInvoiceRequest request)
     {
-        _logger.LogInformation("Received request to create invoice with InvoiceNumber: {InvoiceNumber}", dto.InvoiceNumber);
-        if (dto == null)
+        _logger.LogInformation("Received request to create invoice with InvoiceNumber: {InvoiceNumber}", request.Invoice.InvoiceNumber);
+        
+        if (request.Invoice == null)
         {
             _logger.LogWarning("Received null InvoiceDto");
             return BadRequest("Invoice data cannot be null");
         }
-        if (string.IsNullOrWhiteSpace(dto.InvoiceNumber))
+        if (string.IsNullOrWhiteSpace(request.Invoice.InvoiceNumber))
         {
             _logger.LogWarning("InvoiceNumber is required");
             return BadRequest("InvoiceNumber is required");
@@ -36,7 +38,7 @@ public class InvoicesController : ControllerBase
 
         try
         {
-            var created = await _invoiceService.CreateInvoiceAsync(dto);
+            var created = await _invoiceService.CreateInvoiceAsync(request.Invoice, request.File);
             return CreatedAtAction(nameof(GetInvoiceById), new { id = created.Id }, created);
         }
         catch (Exception ex)

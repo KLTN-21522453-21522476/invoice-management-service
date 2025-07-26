@@ -1,5 +1,4 @@
 ﻿using InvoiceManagementService.Domain.Entities;
-
 using InvoiceManagementService.Shared.Enums;
 
 namespace InvoiceManagementService.Domain.Interfaces;
