@@ -4,25 +4,29 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>a2c684ba-c7b2-44b8-8b83-45fbd79b2fbb</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Appwrite" Version="0.13.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\InvoiceManagementService.Application.Contracts\InvoiceManagementService.Application.Contracts.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Application\InvoiceManagementService.Application.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Domain\InvoiceManagementService.Domain.csproj" />
+    <ProjectReference Include="..\InvoiceManagementService.Entities\InvoiceManagementService.Entities.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Shared\InvoiceManagementService.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Dtos\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 
