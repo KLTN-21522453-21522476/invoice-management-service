@@ -18,7 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\InvoiceManagementService.Application.Contracts\InvoiceManagementService.Application.Contracts.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Domain\InvoiceManagementService.Domain.csproj" />
-    <ProjectReference Include="..\InvoiceManagementService.Entities\InvoiceManagementService.Entities.csproj" />
     <ProjectReference Include="..\InvoiceManagementService.Shared\InvoiceManagementService.Shared.csproj" />
   </ItemGroup>
 

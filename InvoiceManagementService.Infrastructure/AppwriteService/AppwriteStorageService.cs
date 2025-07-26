@@ -103,7 +103,7 @@ public class AppwriteStorageService : IAppwriteStorageService
         }
     }
 
-    public async Task<bool> DeleteFileAsync(string fileId, CancellationToken cancellationToken = default)
+    public async Task DeleteFileAsync(string fileId, CancellationToken cancellationToken = default)
     {
         ValidateFileId(fileId);
 
@@ -117,12 +117,11 @@ public class AppwriteStorageService : IAppwriteStorageService
             );
 
             _logger.LogInformation("File deleted successfully: {FileId}", fileId);
-            return true;
         }
         catch (AppwriteException ex)
         {
             LogAppwriteError(ex, "delete", fileId);
-            return false;
+            throw new StorageOperationException($"Failed to delete file: {fileId}", ex);
         }
         catch (OperationCanceledException)
         {

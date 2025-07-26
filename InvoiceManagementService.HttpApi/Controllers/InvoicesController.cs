@@ -24,17 +24,6 @@ public class InvoicesController : ControllerBase
         [FromForm] CreateInvoiceRequest request)
     {
         _logger.LogInformation("Received request to create invoice with InvoiceNumber: {InvoiceNumber}", request.Invoice.InvoiceNumber);
-        
-        if (request.Invoice == null)
-        {
-            _logger.LogWarning("Received null InvoiceDto");
-            return BadRequest("Invoice data cannot be null");
-        }
-        if (string.IsNullOrWhiteSpace(request.Invoice.InvoiceNumber))
-        {
-            _logger.LogWarning("InvoiceNumber is required");
-            return BadRequest("InvoiceNumber is required");
-        }
 
         try
         {
@@ -44,9 +33,8 @@ public class InvoicesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred while creating invoice");
-            return StatusCode(StatusCodes.Status500InternalServerError, "Invalid invoice data");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
         }
-
     }
 
     [ProducesResponseType(typeof(InvoiceDto), StatusCodes.Status200OK)]
@@ -55,11 +43,7 @@ public class InvoicesController : ControllerBase
     public async Task<IActionResult> GetInvoiceById(Guid id)
     {
         _logger.LogInformation("Received request to get invoice by Id: {InvoiceId}", id);
-        if (id == Guid.Empty)
-        {
-            _logger.LogWarning("Invalid Id provided: {InvoiceId}", id);
-            return BadRequest("Invalid Id");
-        }
+
         try
         {
             var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
@@ -80,33 +64,27 @@ public class InvoicesController : ControllerBase
 
     [ProducesResponseType(typeof(InvoiceDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpPut]
-    public async Task<IActionResult> UpdateInvoice([FromBody] InvoiceDto dto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateInvoice(Guid id, [FromBody] InvoiceDto dto)
     {
-        _logger.LogInformation("Received request to update invoice with Id: {InvoiceId}", dto.Id);
-        if (dto == null)
-        {
-            _logger.LogWarning("Received null InvoiceDto");
-            return BadRequest("Invoice data cannot be null");
-        }
-        if (dto.Id == Guid.Empty)
-        {
-            _logger.LogWarning("Invalid Id provided: {InvoiceId}", dto.Id);
-            return BadRequest("Invalid Id");
-        }
+        _logger.LogInformation("Received request to update invoice with Id: {InvoiceId}", id);
+
+        // The ID from the route is the source of truth.
+        dto.Id = id;
+
         try
         {
             var updated = await _invoiceService.UpdateInvoiceAsync(dto);
             if (updated == null)
             {
-                _logger.LogWarning("Invoice with Id: {InvoiceId} not found for update", dto.Id);
+                _logger.LogWarning("Invoice with Id: {InvoiceId} not found for update", id);
                 return NotFound();
             }
             return Ok(updated);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while updating invoice with Id: {InvoiceId}", dto.Id);
+            _logger.LogError(ex, "An error occurred while updating invoice with Id: {InvoiceId}", id);
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request");
         }
     }
@@ -118,11 +96,7 @@ public class InvoicesController : ControllerBase
     public async Task<IActionResult> DeleteInvoice(Guid id)
     {
         _logger.LogInformation("Received request to delete invoice with Id: {InvoiceId}", id);
-        if (id == Guid.Empty)
-        {
-            _logger.LogWarning("Invalid Id provided: {InvoiceId}", id);
-            return BadRequest("Invalid Id");
-        }
+
         try
         {
             var deleted = await _invoiceService.DeleteInvoiceAsync(id);

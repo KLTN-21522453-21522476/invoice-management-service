@@ -1,0 +1,133 @@
+# Phân tích kiến trúc dự án Commission-Payouts
+
+## Tổng quan
+Commission-Payouts là một hệ thống quản lý hoa hồng và thanh toán chuyên nghiệp, được xây dựng trên nền tảng .NET, sử dụng kiến trúc module hóa và nhiều công nghệ hiện đại. Hệ thống được thiết kế để quản lý quy trình thanh toán hoa hồng, theo dõi các đơn vị sự nghiệp (career units), quản lý các quy tắc thanh toán và tự động hóa nhiều quy trình liên quan.
+
+## Kiến trúc
+
+### Kiến trúc tổng thể
+- **Kiến trúc modul hóa**: Sử dụng Volo.Abp framework để tạo cấu trúc module
+- **Domain-Driven Design (DDD)**: Phân chia rõ ràng giữa các lớp domain, application, infrastructure
+- **Microservices**: Sử dụng Azure Functions cho một số dịch vụ độc lập
+- **Multi-tenant**: Hỗ trợ kiến trúc đa người thuê
+
+### Cấu trúc dự án chính (.NET)
+1. **Core Layers**:
+   - `Commission_Payouts.Domain`: Chứa các entities, domain services, và business logic cốt lõi
+   - `Commission_Payouts.Domain.Shared`: Chứa các constants, enums được dùng chung
+   - `Commission_Payouts.Domain.Entities`: Định nghĩa các entity chính của hệ thống
+
+2. **Data Layer**:
+   - `Commission_Payouts.EntityFrameworkCore`: EF Core ORM, cấu hình database, migrations
+   
+3. **Application Layers**:
+   - `Commission_Payouts.Application.Contracts`: Chứa các interfaces, DTOs
+   - `Commission_Payouts.Application`: Cài đặt các application services
+
+4. **API Layers**:
+   - `Commission_Payouts.HttpApi`: API controllers
+   - `Commission_Payouts.HttpApi.Host`: Host ứng dụng API
+   - `Commission_Payouts.HttpApi.Client`: Client lib để gọi API
+
+5. **Modules**:
+   - `EmailNotification`: Module riêng để xử lý thông báo qua email
+
+6. **Azure Functions**:
+   - `house-keeping`: Xử lý các tác vụ dọn dẹp dữ liệu
+   - `report-export`: Xử lý xuất báo cáo
+   - `rules-engine`: Engine xử lý các quy tắc thanh toán
+
+### Database
+- Sử dụng SQL Server (Code First với Entity Framework Core)
+- Quản lý migration bằng EF Core
+- Mô hình dữ liệu phức tạp với nhiều bảng quản lý quy trình thanh toán và career units
+
+## Công nghệ sử dụng
+
+### Framework và Libraries
+1. **Backend**:
+   - **ASP.NET Core**: Nền tảng web API
+   - **Entity Framework Core**: ORM để tương tác với database
+   - **Volo.ABP**: Framework xây dựng ứng dụng module hóa
+   - **Azure Functions**: Serverless computing cho các tác vụ cụ thể
+   - **Quartz.NET**: Job scheduling để chạy các tác vụ định kỳ
+   - **Serilog**: Logging framework
+   - **AutoMapper**: Object-to-object mapping
+   - **Refit**: Strongly-typed HTTP client
+   - **FluentValidation**: Validation library
+   - **ClosedXML**: Xử lý file Excel
+
+2. **Cloud & Hạ tầng**:
+   - **Azure AD**: Authentication và authorization
+   - **Azure Storage**: Lưu trữ file và blob
+   - **Azure App Configuration**: Quản lý cấu hình và feature flags
+   - **Azure Service Bus**: Messaging giữa các services
+   - **Azure Application Insights**: Monitoring và logging
+   - **Azure Key Vault**: Quản lý secrets và certificates
+   - **Azure Functions**: Serverless computing
+
+3. **Frontend (Angular)**:
+   - **Angular**: Framework frontend
+   - **Angular Material**: Component library
+
+### Authentication & Authorization
+- **Microsoft Identity**: Sử dụng Azure AD
+- **JWT Token**: Xác thực API
+- **Role-based authorization**: Phân quyền dựa trên role
+- **Permission-based authorization**: Phân quyền dựa trên permission
+
+## Chức năng chính
+
+### Quản lý thanh toán và hoa hồng
+- **Rules Engine**: Xử lý các quy tắc thanh toán phức tạp
+- **Payouts**: Quản lý các khoản thanh toán
+- **Run Management**: Quản lý các lần chạy tính toán thanh toán
+- **Audit Trail**: Theo dõi mọi thay đổi trong hệ thống
+- **Commission Calculation**: Tính toán hoa hồng dựa trên quy tắc
+
+### Career Units Management
+- **Career Unit Settings**: Cài đặt và quản lý career units
+- **Employee Purchase/Grant/Vest**: Quản lý vòng đời của career units
+- **Upload & Document Management**: Quản lý tài liệu liên quan
+- **Tax Withholding**: Quản lý thuế cho career units
+
+### Integration & External Systems
+- **Salesforce Integration**: Tích hợp với Salesforce
+- **Azure AD Integration**: Quản lý người dùng và xác thực
+- **Email Notification System**: Hệ thống gửi email tự động
+- **Data Export/Import**: Nhập xuất dữ liệu từ nhiều nguồn
+
+### Background Processing
+- **Queue System**: Xử lý các tác vụ nặng trong background
+- **Scheduled Jobs**: Các tác vụ tự động chạy theo lịch
+- **File Processing**: Xử lý file trong background
+
+### Reporting & Analytics
+- **Report Generation**: Tạo báo cáo động
+- **Data Export**: Xuất dữ liệu dưới nhiều định dạng
+- **Archive Management**: Quản lý dữ liệu lịch sử
+
+## Kiến trúc DevOps
+- **Azure Pipelines**: CI/CD pipelines để triển khai tự động
+- **Infrastructure as Code**: Sử dụng Terraform để quản lý hạ tầng
+- **Multi-environment Deployment**: Dev, QA, Staging, Production
+- **Database Migrations**: Quản lý schema và migration dữ liệu
+
+## Các mẫu thiết kế phổ biến
+- **Repository Pattern**: Trong lớp dữ liệu
+- **CQRS**: Tách biệt đọc và ghi
+- **Dependency Injection**: Sử dụng rộng rãi trong toàn dự án
+- **Options Pattern**: Quản lý cấu hình
+- **Mediator Pattern**: Giao tiếp giữa các components
+- **BackgroundService**: Xử lý các tác vụ background
+
+## Tối ưu hiệu suất
+- **Caching**: Memory cache, Redis
+- **Lazy Loading**: Tải dữ liệu theo nhu cầu
+- **Command Timeout**: Quản lý timeout cho database commands
+- **Rate Limiting**: Giới hạn tần suất cho một số API
+
+## Kết luận
+Commission-Payouts là một hệ thống enterprise phức tạp, được xây dựng với kiến trúc module hóa sử dụng ABP framework. Hệ thống tận dụng nhiều công nghệ hiện đại của Microsoft và Azure để xây dựng một giải pháp quản lý hoa hồng và thanh toán mạnh mẽ, có khả năng mở rộng và bảo trì.
+
+Kiến trúc của dự án tập trung vào tính module hóa, khả năng mở rộng và bảo mật, sử dụng Domain-Driven Design và các best practices hiện đại trong phát triển phần mềm doanh nghiệp.
