@@ -1,6 +1,6 @@
 ﻿using InvoiceManagementService.Shared.Enums;
 
-namespace InvoiceManagementService.Application.Contracts.Dtos;
+namespace InvoiceManagementService.Application.Contracts.DTO;
 
 public class InvoiceGroupQueryParametersDto
 {
