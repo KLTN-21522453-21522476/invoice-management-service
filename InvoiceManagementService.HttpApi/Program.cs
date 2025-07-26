@@ -3,6 +3,7 @@ using InvoiceManagementService.Application.Services;
 using InvoiceManagementService.Domain.Interfaces;
 using InvoiceManagementService.Infrastructure;
 using InvoiceManagementService.Infrastructure.Data.Context;
+using InvoiceManagementService.Infrastructure.HealthChecks;
 using InvoiceManagementService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +21,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+
+builder.Services.AddHealthChecks()
+    .AddCheck<AppwriteStorageHealthCheck>("appwrite_storage");
+
 var app = builder.Build();
+
+app.MapHealthChecks("/health");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

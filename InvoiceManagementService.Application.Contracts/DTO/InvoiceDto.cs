@@ -11,6 +11,7 @@ public class InvoiceDto
     public string? Model { get; set; }
     public string? Address { get; set; }
     public string? FileName { get; set; }
+    public string? FileId { get; set; }
     public string? StoreName { get; set; }
     public Status Status { get; set; }
     public Guid? ApprovedBy { get; set; }

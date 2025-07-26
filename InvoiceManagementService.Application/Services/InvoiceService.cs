@@ -1,8 +1,8 @@
 using InvoiceManagementService.Application.Contracts.DTO;
-using InvoiceManagementService.Application.Contracts.Dtos;
 using InvoiceManagementService.Application.Contracts.Interfaces;
 using InvoiceManagementService.Application.Mappers;
 using InvoiceManagementService.Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace InvoiceManagementService.Application.Services;
@@ -10,11 +10,16 @@ namespace InvoiceManagementService.Application.Services;
 public class InvoiceService : IInvoiceService
 {
     private readonly IInvoiceRepository _invoiceRepository;
+    private readonly IAppwriteStorageService _appwriteStorageService;
     private readonly ILogger<InvoiceService> _logger;
 
-    public InvoiceService(IInvoiceRepository invoiceRepository, ILogger<InvoiceService> logger)
+    public InvoiceService(
+        IInvoiceRepository invoiceRepository,
+        IAppwriteStorageService appwriteStorageService,
+        ILogger<InvoiceService> logger)
     {
         _invoiceRepository = invoiceRepository;
+        _appwriteStorageService = appwriteStorageService;
         _logger = logger;
     }
 
@@ -44,12 +49,26 @@ public class InvoiceService : IInvoiceService
         }
     }
 
-    public async Task<InvoiceDto> CreateInvoiceAsync(InvoiceDto invoiceDto)
+    public async Task<InvoiceDto> CreateInvoiceAsync(InvoiceDto invoiceDto, IFormFile invoiceImage)
     {
         try
         {
             _logger.LogInformation("Creating invoice with InvoiceNumber: {InvoiceNumber}", invoiceDto.InvoiceNumber);
             InvoiceMapper mapper = new InvoiceMapper();
+            if (invoiceImage != null && invoiceImage.Length > 0)
+            {
+                _logger.LogInformation("Uploading invoice image for InvoiceNumber: {InvoiceNumber}", invoiceDto.InvoiceNumber);
+
+                using (var stream = invoiceImage.OpenReadStream())
+                {
+                    var result = await _appwriteStorageService.UploadFileAsync(stream, invoiceImage.FileName);
+                    invoiceDto.ImageUrl = result.FileUrl;
+                    invoiceDto.FileName = invoiceImage.FileName;
+                    invoiceDto.FileId = result.FileId;
+                }
+
+                _logger.LogInformation("Invoice image uploaded successfully for InvoiceNumber: {InvoiceNumber}", invoiceDto.InvoiceNumber);
+            }
             var invoice = mapper.MapDtoToInvoice(invoiceDto);
             await _invoiceRepository.AddAsync(invoice);
             _logger.LogInformation("Invoice {InvoiceId} created successfully", invoice.Id);
@@ -115,9 +134,16 @@ public class InvoiceService : IInvoiceService
         try
         {
             _logger.LogInformation("Deleting invoice with Id: {InvoiceId}", id);
+            var invoice = await _invoiceRepository.GetByIdAsync(id);
+            if (invoice == null)
+            {
+                _logger.LogWarning("Invoice with Id: {InvoiceId} not found for deletion", id);
+                return false;
+            }
             var result = await _invoiceRepository.DeleteAsync(id);
             if (result)
             {
+                await _appwriteStorageService.DeleteFileAsync(invoice.FileId);
                 _logger.LogInformation("Invoice with Id: {InvoiceId} deleted successfully", id);
             }
             else
